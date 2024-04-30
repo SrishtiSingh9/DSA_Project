@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="sytle1.css">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Now</title>
+    <style>
+        input,
+        .button {
+            padding: 5px;
+            font-size: 15px;
+            font-family: 'Bree Serif', serif;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .button {
+            background-color: brown;
+            font-weight: bold;
+            margin: 5px;
+            color: aliceblue;
+        }
+
+        #message {
+            width: 25%;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+    </style>
+</head>
+
+<body>
+    <section id="home">
+        <h1 class="h-primary ">Order Your favourite Food</h1>
+        <p>Welcome to FoodPoint, where satisfying your cravings is as easy as stealing candy from a baby... but
+            way more legal! Whether you're hungry enough to eat a horse or just in need of a little pick-me-up, we've
+            got you covered.</p>
+    </section>
+    <section id="services-container">
+        <h1 class="h-primary center">Our Menu</h1>
+
+        <input type="text" id="message" placeholder="Search for food... " style="margin-left: 200px;">
+        <button onclick="searchFood()" class="btn">Search</button>
+
+        <select id="sortOptions" class="btn">
+            <option value="nameAsc">Sort by Name (Asc)</option>
+            <option value="nameDesc">Sort by Name (Desc)</option>
+            <option value="price">Sort by Price</option>
+            <option value="reviews">Sort by Reviews</option>
+        </select>
+
+        <button onclick="sortItems()" class="btn">Sort</button>
+
+        <div id="services" class="row"></div>
+    </section>
+    <footer>
+        <div class="center1">
+            Copyright &copy; www.FoodPoint.com All rights reserved!
+            <br>Made by Srishtijsingh
+        </div>
+    </footer>
+
+    <script>
+        // Define an array to store food items
+        let foodItems = [
+            { name: "Palak Paneer", image: "1.jpg", description: "Description of Palak Paneer...", price: 100, reviews: 4.5 },
+            { name: "Caprese Salad", image: "2.jpeg", description: "Description of Caprese Salad...", price: 80, reviews: 4.2 },
+            { name: "Vegetable Paella", image: "1.jpg", description: "Description of Vegetable Paella...", price: 120, reviews: 4.8 },
+            { name: "Falafel", image: "2.jpeg", description: "Description of Falafel...", price: 90, reviews: 4.3 },
+            { name: "Vegetable Tempura", image: "1.jpg", description: "Description of Vegetable Tempura...", price: 110, reviews: 4.6 },
+            { name: "Greek Spanakopita", image: "2.jpeg", description: "Description of Greek Spanakopita...", price: 95, reviews: 4.4 },
+            { name: "Eggplant Parmesan", image: "1.jpg", description: "Description of Eggplant Parmesan...", price: 85, reviews: 4.1 },
+            { name: "Vegetarian Chili", image: "2.jpeg", description: "Description of Vegetarian Chili...", price: 100, reviews: 4.7 },
+            { name: "Paneer Chili", image: "1.jpg", description: "Description of Paneer Chili...", price: 105, reviews: 4.2 },
+            { name: "Matar Paneer", image: "2.jpeg", description: "Description of Matar Paneer...", price: 110, reviews: 4.6 }
+        ];
+
+        // Function to shuffle array elements randomly
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Function to display food items
+        function displayFoodItems(items) {
+            const servicesContainer = document.getElementById('services');
+            servicesContainer.innerHTML = ''; // Clear previous content
+
+            let row = document.createElement('div');
+            row.classList.add('row');
+            let count = 0; // Track the number of items added to the current row
+
+            items.forEach(item => {
+                if (count === 3) {
+                    servicesContainer.appendChild(row);
+                    row = document.createElement('div');
+                    row.classList.add('row');
+                    count = 0; // Reset count for the new row
+                }
+
+                const column = document.createElement('div');
+                column.classList.add('column', 'box');
+                column.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <h2 class="h-secondary">${item.name}</h2>
+                    <p class="center1">${item.description}</p>
+                    <p class="center1">Price: $${item.price}</p>
+                    <p class="center1">Reviews: ${item.reviews}</p>
+                    <center><input type="number" class="Quantity" placeholder="Quantity" min="0"></center>
+                    <center><button class="button"> Add</button></center>
+                `;
+                row.appendChild(column);
+                count++; // Increment count for each item added
+            });
+            // Append the last row if it's not fully filled
+            if (row.children.length > 0) {
+                servicesContainer.appendChild(row);
+            }
+        }
+
+        // Function to search for food items
+        function searchFood() {
+            const searchInput = document.getElementById('message').value.toLowerCase();
+
+            const filteredItems = foodItems.filter(item => item.name.toLowerCase().includes(searchInput));
+            displayFoodItems(filteredItems);
+        }
+
+        // Function to sort food items
+        function sortItems() {
+            const sortOption = document.getElementById('sortOptions').value;
+
+            switch (sortOption) {
+                case 'nameAsc':
+                    foodItems.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'nameDesc':
+                    foodItems.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'price':
+                    foodItems.sort((a, b) => a.price - b.price);
+                    break;
+                case 'reviews':
+                    foodItems.sort((a, b) => b.reviews - a.reviews);
+                    break;
+                default:
+                    break;
+            }
+
+            displayFoodItems(foodItems);
+        }
+
+        // Shuffle the food items array initially
+        foodItems = shuffleArray(foodItems);
+        displayFoodItems(foodItems);
+    </script>
+</body>
+
+</html>
